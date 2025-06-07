@@ -1,0 +1,10 @@
+# JetBrains tools
+.idea/
+*.DotSettings
+
+# Jupyter
+.ipynb_checkpoints/
+
+# build directories
+cmake-build-debug/
+cmake-build-release/

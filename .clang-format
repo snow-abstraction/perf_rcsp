@@ -1,0 +1,10 @@
+BasedOnStyle: LLVM
+SortIncludes: true
+IncludeBlocks: Regroup
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+IndentWidth: 2
+ContinuationIndentWidth: 2
+ColumnLimit: 120
+AlignAfterOpenBracket: BlockIndent
+PenaltyBreakOpenParenthesis: 0
