@@ -40,3 +40,9 @@ jobs:
         with:
           clang-format-version: '14'
           check-path: 'code'
+
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wagoid/commitlint-github-action@v5
