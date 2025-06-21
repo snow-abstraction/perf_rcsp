@@ -28,10 +28,29 @@ enable_testing()
 find_package(GTest CONFIG REQUIRED)
 include(GoogleTest)
 
+find_package(spdlog REQUIRED)
 
-add_executable(perf_rcsp code/src/main.cpp)
+find_package(Boost REQUIRED COMPONENTS
+        graph
+        numeric_conversion
+)
+
+
+add_executable(perf_rcsp
+        code/src/main.cpp
+        code/src/example_graphs.cpp
+        code/src/rcsp_boost_graph.cpp
+)
+target_link_libraries(perf_rcsp PRIVATE
+        spdlog::spdlog
+        Boost::graph
+)
 
 add_executable(run_tests
-        code/test/dummy_test.cpp)
-target_link_libraries(run_tests PRIVATE GTest::gtest_main)
+        code/test/state_operators_test.cpp
+)
+target_link_libraries(run_tests PRIVATE
+        spdlog::spdlog
+        GTest::gtest_main
+)
 gtest_discover_tests(run_tests)

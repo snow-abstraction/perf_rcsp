@@ -13,9 +13,14 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
+#include "example_graphs.h"
+#include "rcsp_boost_graph.h"
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
+  using namespace perf_rcsp;
+  SourceTargetBoostGraph s_t_g;
+  generate(4, 42, s_t_g);
+  save_to_dot_file(s_t_g.graph, "graph.dot");
+
   return 0;
 }

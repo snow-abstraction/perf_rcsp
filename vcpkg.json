@@ -14,5 +14,11 @@
   }, {
     "name" : "spdlog",
     "version>=" : "1.15.3"
+  }, {
+    "name" : "boost-graph",
+    "version>=" : "1.88.0"
+  }, {
+    "name" : "boost-numeric-conversion",
+    "version>=" : "1.88.0"
   } ]
 }
