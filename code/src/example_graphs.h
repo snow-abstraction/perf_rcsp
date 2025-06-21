@@ -12,9 +12,29 @@
 // You should have received a copy of the GNU Affero General Public License along with this program. If not, see
 // <https://www.gnu.org/licenses/>.
 //
+//
+// Created by douglas on 6/21/25.
+//
 
-#include "../../code/src/dummy.h"
+#ifndef EXAMPLE_GRAPHS_H
+#define EXAMPLE_GRAPHS_H
 
-#include <gtest/gtest.h>
+#include "rcsp_boost_graph.h"
 
-TEST(Dummy, Dummy) { ASSERT_TRUE(return_true()); }
+namespace perf_rcsp {
+struct SourceTargetBoostGraph {
+  Index source_vertex = -1;
+  Index target_vertex = -1;
+  BoostGraph graph;
+};
+
+// The function generate generates random SourceTargetBoostGraph
+// to run a RCSP algorithm on.
+//
+// Note: use a reference instead of returning a SourceTargetBoostGraph, since
+// it is unclear if copying or moving boost::graph works correctly.
+void generate(int sites_count, int seed, SourceTargetBoostGraph &s_t_graph);
+
+} // namespace perf_rcsp
+
+#endif // EXAMPLE_GRAPHS_H
