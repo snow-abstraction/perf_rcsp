@@ -35,6 +35,7 @@ find_package(Boost REQUIRED COMPONENTS
         numeric_conversion
 )
 
+find_package(benchmark REQUIRED)
 
 add_executable(perf_rcsp
         code/src/main.cpp
@@ -44,6 +45,18 @@ add_executable(perf_rcsp
 target_link_libraries(perf_rcsp PRIVATE
         spdlog::spdlog
         Boost::graph
+)
+
+add_executable(benchmark2
+        code/src/benchmark.cpp
+        code/src/example_graphs.cpp
+        code/src/rcsp_boost_graph.cpp
+)
+target_link_libraries(benchmark2 PRIVATE
+        spdlog::spdlog
+        Boost::graph
+        benchmark::benchmark
+        benchmark::benchmark_main
 )
 
 add_executable(run_tests
