@@ -20,5 +20,8 @@
   }, {
     "name" : "boost-numeric-conversion",
     "version>=" : "1.88.0"
+  }, {
+    "name" : "benchmark",
+    "version>=" : "1.9.4"
   } ]
 }
