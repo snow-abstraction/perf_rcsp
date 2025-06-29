@@ -17,11 +17,12 @@
 #include "rcsp_boost_graph.h"
 
 #include <boost/graph/graphviz.hpp>
+#include <iosfwd>
 #include <spdlog/fmt/fmt.h>
 
 namespace perf_rcsp {
 
-void save_to_dot_file(const BoostGraph &graph, const char *filename) {
+void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, std::ostream &ofs) {
 
   auto vertex_writer = [&](std::ostream &out, auto v) {
     const auto &desc = graph[v];
@@ -30,6 +31,11 @@ void save_to_dot_file(const BoostGraph &graph, const char *filename) {
 
   auto edge_writer = [&](std::ostream &out, auto e) {
     const auto &desc = graph[e];
+    if (!show_travel_edges_label) {
+      if (graph[boost::source(e, graph)].index != graph[boost::target(e, graph)].index) {
+        return;
+      }
+    }
     out << fmt::format(
       "[label=\"{},tw:[{},{}],cost:{}\nduration:{},energy:{}{}\"]", desc.index, desc.earliest_time, desc.latest_time,
       desc.cost_change, desc.time_change, desc.energy_change,
@@ -37,7 +43,6 @@ void save_to_dot_file(const BoostGraph &graph, const char *filename) {
     );
   };
 
-  std::ofstream ofs(filename);
   boost::write_graphviz(ofs, graph, vertex_writer, edge_writer);
 };
 
