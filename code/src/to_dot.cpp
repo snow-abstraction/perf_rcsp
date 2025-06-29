@@ -25,6 +25,9 @@ int main(int argc, char *argv[]) {
   using namespace perf_rcsp;
   try {
     if (argc != 4) {
+      if (argc == 0) {
+        throw std::invalid_argument("argc is 0");
+      }
       std::filesystem::path program_path(argv[0]);
       std::string program_name = program_path.filename().string();
       fmt::println(
