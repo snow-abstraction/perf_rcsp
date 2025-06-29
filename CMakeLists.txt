@@ -37,12 +37,12 @@ find_package(Boost REQUIRED COMPONENTS
 
 find_package(benchmark REQUIRED)
 
-add_executable(perf_rcsp
-        code/src/main.cpp
+add_executable(to_dot
+        code/src/to_dot.cpp
         code/src/example_graphs.cpp
         code/src/rcsp_boost_graph.cpp
 )
-target_link_libraries(perf_rcsp PRIVATE
+target_link_libraries(to_dot PRIVATE
         spdlog::spdlog
         Boost::graph
 )

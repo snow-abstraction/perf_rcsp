@@ -38,12 +38,12 @@ struct Vertex {
 
 using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex, ExtensionData>;
 
-// save the graph to the DOT file format.
+// output the graph to the DOT file format to standard out.
 // See: https://graphviz.org/doc/info/lang.html
 // The dot file that saved includes site positions as vertex positions
 // which the neato graph layout algorithm will use when i.e. creating a
 // svg: dot -Kneato -Tsvg graph.dot -o graph.svg
-void save_to_dot_file(const BoostGraph &graph, const char *filename);
+void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, std::ostream &ofs);
 
 class Extension // TODO: replace with lambda?
 {
