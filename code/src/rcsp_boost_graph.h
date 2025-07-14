@@ -25,18 +25,14 @@
 #include <boost/graph/r_c_shortest_paths.hpp>
 
 namespace perf_rcsp {
-struct Site {
-  float x;
-  float y;
-  auto operator<=>(const Site &) const = default;
-};
 
-struct Vertex {
+struct BoostVertex {
   Index index = -1;
   Site site = {-1, -1};
+  auto operator<=>(const BoostVertex &) const = default;
 };
 
-using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex, ExtensionData>;
+using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, BoostVertex, ExtensionData>;
 
 struct SourceTargetBoostGraph {
   Index source_vertex = -1;
@@ -44,11 +40,13 @@ struct SourceTargetBoostGraph {
   BoostGraph graph;
 };
 
-struct RCSPSolutions {
+struct BoostSolutions {
   // These two vector should have the same size. Applying all edges of the ith element of pareto_optimal_solutions
   // to the initial state should result in the ith end_states.
-  std::vector<std::vector<boost::graph_traits<BoostGraph>::edge_descriptor>> pareto_optimal_solutions;
-  std::vector<State> end_states;
+
+  // Edges of each path are in reverse order
+  std::vector<std::vector<boost::graph_traits<BoostGraph>::edge_descriptor>> nondominated_paths;
+  std::vector<State> nondominated_end_states;
 };
 
 // output the graph to the DOT file format to standard out.
@@ -58,7 +56,7 @@ struct RCSPSolutions {
 // svg: dot -Kneato -Tsvg graph.dot -o graph.svg
 void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, std::ostream &ofs);
 
-RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state);
+BoostSolutions find_boost_solutions(const SourceTargetBoostGraph &graph, const State &initial_state);
 
 } // namespace perf_rcsp
 

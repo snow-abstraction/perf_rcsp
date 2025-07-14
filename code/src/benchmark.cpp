@@ -27,11 +27,11 @@ static void BM_BoostRCSP(benchmark::State &state) {
     perf_rcsp::generate(static_cast<int>(state.range(0)), seed, s_t_g);
     ++seed;
     state.ResumeTiming();
-    auto solutions = find_solutions(s_t_g, initial_state);
+    auto solutions = find_boost_solutions(s_t_g, initial_state);
     // It is intended that the generated instance should have some solutions.
-    ASSERT_ALWAYS(!solutions.end_states.empty());
+    ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
     // help prevent optimizing away find_solutions.
-    seed += static_cast<int>(solutions.end_states.size());
+    seed += static_cast<int>(solutions.nondominated_end_states.size());
   }
 }
 

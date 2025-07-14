@@ -78,6 +78,7 @@ bool add_site_to_site_travel_edges(
 }
 
 void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t_graph) {
+  ASSERT_ALWAYS(1 <= sites_count);
   s_t_graph.source_vertex = 0;
   s_t_graph.target_vertex = sites_count;
   auto &graph = s_t_graph.graph;
@@ -88,11 +89,11 @@ void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t
 
   // add one vertex for each site
   for (auto [index, site] : views::enumerate(sites)) {
-    boost::add_vertex(Vertex{boost::numeric_cast<Index>(index), site}, graph);
+    boost::add_vertex(BoostVertex{boost::numeric_cast<Index>(index), site}, graph);
   }
 
   // add one extra vertex to be used as the target vertex and offset position for visualization
-  boost::add_vertex(Vertex{sites.size(), Site{sites[0].x + 0.5f, sites[0].y + 0.5f}}, graph);
+  boost::add_vertex(BoostVertex{sites.size(), Site{sites[0].x + 0.5f, sites[0].y + 0.5f}}, graph);
 
   const int latest_time = 100;
   Index extension_index = 0; // also the edge index
@@ -110,6 +111,7 @@ void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t
 
   // add delivery edges
   for (Index i = 1; i < sites_count; ++i) {
+    ASSERT_ALWAYS(i < N_DELIVERIES);
     boost::add_edge(i, i, ExtensionData(extension_index++, 0, latest_time, 0, 0, 0, static_cast<int>(i)), graph);
   }
 
