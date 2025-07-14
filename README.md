@@ -15,3 +15,10 @@ See the [LICENSE](./LICENSE) file for details.
 
 1. I'll use "route generation" for a simple VRP as my dummy problem for RCSP. Some aspects will be naive because those
    are not the aspects I want to explore in this project.
+
+
+### Development notes:
+
+1. If you add CMake Profile to be built in CLion, you need to go to the vcpkg menu, choose edit and check the added
+   CMake profile in "Add Vcpkg integration to existing CMake profiles". Otherwise, CMake won't find the packages such
+   as `boost-graph`, `gtest`, etc.
