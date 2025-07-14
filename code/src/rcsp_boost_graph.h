@@ -31,12 +31,12 @@ struct Site {
   auto operator<=>(const Site &) const = default;
 };
 
-struct Vertex {
+struct BoostVertex {
   Index index = -1;
   Site site = {-1, -1};
 };
 
-using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex, ExtensionData>;
+using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, BoostVertex, ExtensionData>;
 
 struct SourceTargetBoostGraph {
   Index source_vertex = -1;

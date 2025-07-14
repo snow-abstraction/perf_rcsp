@@ -71,7 +71,7 @@ RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &i
   RCSPSolutions solutions;
   const auto &g = graph.graph;
   boost::r_c_shortest_paths(
-    g, get(&Vertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,
+    g, get(&BoostVertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,
     solutions.pareto_optimal_solutions, solutions.end_states, initial_state, Extension(), Dominance()
   );
 
