@@ -13,15 +13,33 @@
 // <https://www.gnu.org/licenses/>.
 //
 
+#include "example_graphs.h"
+
 #include <benchmark/benchmark.h>
 
-static void BM_SomeFunction(benchmark::State &state) {
-  // Perform setup here
+static void BM_BoostRCSP(benchmark::State &state) {
+
+  int seed = 42;
   for (auto _ : state) {
-    // This code gets timed
+    const perf_rcsp::State initial_state{};
+    state.PauseTiming();
+    perf_rcsp::SourceTargetBoostGraph s_t_g;
+    perf_rcsp::generate(static_cast<int>(state.range(0)), seed, s_t_g);
+    ++seed;
+    state.ResumeTiming();
+    auto solutions = find_solutions(s_t_g, initial_state);
+    // It is intended that the generated instance should have some solutions.
+    ASSERT_ALWAYS(!solutions.end_states.empty());
+    // help prevent optimizing away find_solutions.
+    seed += static_cast<int>(solutions.end_states.size());
   }
 }
-// Register the function as a benchmark
-BENCHMARK(BM_SomeFunction);
-// Run the benchmark
+
+static void customer_sites_counts(benchmark::internal::Benchmark *b) {
+  for (int customer_sites_count = 5; customer_sites_count <= 10; ++customer_sites_count) {
+    b->Args({customer_sites_count});
+  }
+}
+
+BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts);
 BENCHMARK_MAIN();

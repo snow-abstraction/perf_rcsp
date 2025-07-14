@@ -22,11 +22,6 @@
 #include "rcsp_boost_graph.h"
 
 namespace perf_rcsp {
-struct SourceTargetBoostGraph {
-  Index source_vertex = -1;
-  Index target_vertex = -1;
-  BoostGraph graph;
-};
 
 // The function generate generates random SourceTargetBoostGraph
 // to run a RCSP algorithm on.
