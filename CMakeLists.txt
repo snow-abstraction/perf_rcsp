@@ -47,12 +47,12 @@ target_link_libraries(to_dot PRIVATE
         Boost::graph
 )
 
-add_executable(benchmark2
+add_executable(benchmark
         code/src/benchmark.cpp
         code/src/example_graphs.cpp
         code/src/rcsp_boost_graph.cpp
 )
-target_link_libraries(benchmark2 PRIVATE
+target_link_libraries(benchmark PRIVATE
         spdlog::spdlog
         Boost::graph
         benchmark::benchmark
