@@ -17,6 +17,7 @@
 #include "rcsp_boost_graph.h"
 
 #include <boost/graph/graphviz.hpp>
+#include <boost/graph/r_c_shortest_paths.hpp>
 #include <iosfwd>
 #include <spdlog/fmt/fmt.h>
 
@@ -45,5 +46,17 @@ void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, 
 
   boost::write_graphviz(ofs, graph, vertex_writer, edge_writer);
 };
+
+RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state) {
+  RCSPSolutions solutions;
+
+  const auto &g = graph.graph;
+  boost::r_c_shortest_paths(
+    g, get(&Vertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,
+    solutions.pareto_optimal_solutions, solutions.end_states, initial_state, Extension(), Dominance()
+  );
+
+  return solutions;
+}
 
 } // namespace perf_rcsp

@@ -38,6 +38,19 @@ struct Vertex {
 
 using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex, ExtensionData>;
 
+struct SourceTargetBoostGraph {
+  Index source_vertex = -1;
+  Index target_vertex = -1;
+  BoostGraph graph;
+};
+
+struct RCSPSolutions {
+  // These two vector should have the same size. Applying all edges of the ith element of pareto_optimal_solutions
+  // to the initial state should result in the ith end_states.
+  std::vector<std::vector<boost::graph_traits<BoostGraph>::edge_descriptor>> pareto_optimal_solutions;
+  std::vector<State> end_states;
+};
+
 // output the graph to the DOT file format to standard out.
 // See: https://graphviz.org/doc/info/lang.html
 // The dot file that saved includes site positions as vertex positions
@@ -66,6 +79,8 @@ public:
     return is_dominate(res_cont_1, res_cont_2);
   }
 };
+
+RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state);
 
 } // namespace perf_rcsp
 
