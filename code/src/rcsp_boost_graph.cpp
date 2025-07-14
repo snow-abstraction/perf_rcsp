@@ -48,8 +48,27 @@ void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, 
 };
 
 RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state) {
-  RCSPSolutions solutions;
+  class Extension {
+  public:
+    bool operator()(
+      const BoostGraph &g,
+      State &new_cont,
+      const State &old_cont,
+      const boost::graph_traits<BoostGraph>::edge_descriptor &ed
+    ) const {
+      const ExtensionData &extension_data = get(boost::edge_bundle, g)[ed];
+      return extend(old_cont, extension_data, new_cont);
+    }
+  };
 
+  class Dominance {
+  public:
+    bool operator()(const State &res_cont_1, const State &res_cont_2) const {
+      return is_dominate(res_cont_1, res_cont_2);
+    }
+  };
+
+  RCSPSolutions solutions;
   const auto &g = graph.graph;
   boost::r_c_shortest_paths(
     g, get(&Vertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,

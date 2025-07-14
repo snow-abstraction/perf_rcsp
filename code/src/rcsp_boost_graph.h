@@ -58,28 +58,6 @@ struct RCSPSolutions {
 // svg: dot -Kneato -Tsvg graph.dot -o graph.svg
 void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, std::ostream &ofs);
 
-class Extension // TODO: replace with lambda?
-{
-public:
-  bool operator()(
-    const BoostGraph &g,
-    State &new_cont,
-    const State &old_cont,
-    const boost::graph_traits<BoostGraph>::edge_descriptor &ed
-  ) const {
-    const ExtensionData &extension_data = get(boost::edge_bundle, g)[ed];
-    return extend(old_cont, extension_data, new_cont);
-  }
-};
-
-class Dominance // TODO: replace with lambda?
-{
-public:
-  bool operator()(const State &res_cont_1, const State &res_cont_2) const {
-    return is_dominate(res_cont_1, res_cont_2);
-  }
-};
-
 RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state);
 
 } // namespace perf_rcsp
