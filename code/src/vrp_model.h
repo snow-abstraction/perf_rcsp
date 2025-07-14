@@ -23,6 +23,12 @@
 namespace perf_rcsp {
 using Index = size_t;
 
+struct Site {
+  float x;
+  float y;
+  auto operator<=>(const Site &) const = default;
+};
+
 constexpr int N_DELIVERIES = 32;
 constexpr int NOT_A_DELIVERY_MARKER = N_DELIVERIES;
 
@@ -34,6 +40,7 @@ struct ExtensionData {
   int time_change = 0;
   int energy_change = 0;
   int delivery_index = NOT_A_DELIVERY_MARKER;
+  auto operator<=>(const ExtensionData &) const = default;
 };
 
 struct State { // Also known as a "resource container".

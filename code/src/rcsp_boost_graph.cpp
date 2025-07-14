@@ -47,7 +47,7 @@ void output_graph_as_dot(const BoostGraph &graph, bool show_travel_edges_label, 
   boost::write_graphviz(ofs, graph, vertex_writer, edge_writer);
 };
 
-RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &initial_state) {
+BoostSolutions find_boost_solutions(const SourceTargetBoostGraph &graph, const State &initial_state) {
   class Extension {
   public:
     bool operator()(
@@ -68,11 +68,11 @@ RCSPSolutions find_solutions(const SourceTargetBoostGraph &graph, const State &i
     }
   };
 
-  RCSPSolutions solutions;
+  BoostSolutions solutions;
   const auto &g = graph.graph;
   boost::r_c_shortest_paths(
-    g, get(&Vertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,
-    solutions.pareto_optimal_solutions, solutions.end_states, initial_state, Extension(), Dominance()
+    g, get(&BoostVertex::index, g), get(&ExtensionData::index, g), graph.source_vertex, graph.target_vertex,
+    solutions.nondominated_paths, solutions.nondominated_end_states, initial_state, Extension(), Dominance()
   );
 
   return solutions;
