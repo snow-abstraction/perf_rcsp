@@ -78,6 +78,7 @@ bool add_site_to_site_travel_edges(
 }
 
 void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t_graph) {
+  ASSERT_ALWAYS(1 <= sites_count);
   s_t_graph.source_vertex = 0;
   s_t_graph.target_vertex = sites_count;
   auto &graph = s_t_graph.graph;
@@ -110,6 +111,7 @@ void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t
 
   // add delivery edges
   for (Index i = 1; i < sites_count; ++i) {
+    ASSERT_ALWAYS(i < N_DELIVERIES);
     boost::add_edge(i, i, ExtensionData(extension_index++, 0, latest_time, 0, 0, 0, static_cast<int>(i)), graph);
   }
 

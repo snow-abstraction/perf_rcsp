@@ -36,6 +36,7 @@ struct TargetEdge {
 
 struct Vertex {
   Index index = -1;
+  Site site = {-1, -1};
   std::vector<TargetEdge> out_edges;
 };
 
@@ -44,10 +45,13 @@ struct EdgeLocation {
   Index out_edge_index = 0;
 };
 
-struct RCSP_Result {
-  std::vector<State> nondominated_states;
+struct Solutions {
+  // These two vector should have the same size. Applying all edges of the ith element of pareto_optimal_solutions
+  // to the initial state should result in the ith end_states.
+
   // Edges of each path are in reverse order
   std::vector<std::vector<EdgeLocation>> nondominated_paths;
+  std::vector<State> nondominated_end_states;
 };
 
 class Graph {
@@ -55,9 +59,9 @@ class Graph {
   std::vector<EdgeLocation> edges = {};
 
 public:
-  Index add_vertex() {
+  Index add_vertex(const Site & site) {
     Index index = vertices.size();
-    vertices.emplace_back(index, std::vector<TargetEdge>());
+    vertices.emplace_back(index, site, std::vector<TargetEdge>());
     return index;
   }
 
@@ -141,7 +145,7 @@ inline void extend_and_handle_domination(
   next_labels.emplace_back(new_state, false, tree_index);
 }
 
-inline RCSP_Result run(const Graph &g, Index source_index, Index target_index, State initial_state) {
+inline Solutions find_solutions(const Graph &g, Index source_index, Index target_index, State initial_state) {
   ASSERT_ALWAYS(source_index != target_index);
   const auto &vs = g.get_vertices();
   ASSERT_ALWAYS(vs[target_index].out_edges.empty());
@@ -213,7 +217,6 @@ inline RCSP_Result run(const Graph &g, Index source_index, Index target_index, S
 
     // TODO: instead of skipping dominated above. We could filter out dominated here, thinking
     //  of parallelization.
-
     std::swap(curr, next);
   }
 
@@ -236,8 +239,8 @@ inline RCSP_Result run(const Graph &g, Index source_index, Index target_index, S
     nondominated_paths.push_back(path);
   }
 
-  return RCSP_Result{
-    (std::vector<State>(nondominated_target_states.begin(), nondominated_target_states.end())), nondominated_paths
+  return Solutions{
+    nondominated_paths, std::vector<State>(nondominated_target_states.begin(), nondominated_target_states.end())
   };
 }
 

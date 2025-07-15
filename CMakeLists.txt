@@ -61,7 +61,7 @@ target_link_libraries(benchmark PRIVATE
 
 add_executable(run_tests
         code/test/state_operators_test.cpp
-        code/test/equivalent_solutions_test.cpp
+        code/test/convert_test.cpp
         code/src/convert.cpp
         code/src/rcsp_boost_graph.cpp
         code/src/example_graphs.cpp

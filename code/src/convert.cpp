@@ -18,21 +18,41 @@
 
 #include "convert.h"
 
+#include <boost/range/iterator_range.hpp>
+
 namespace perf_rcsp {
-Graph convert(const BoostGraph &bg) {
-  Graph g;
-  for (auto _ : boost::make_iterator_range(boost::vertices(bg))) {
-    g.add_vertex();
+Graph convert_to_graph(const BoostGraph &boost_graph) {
+  Graph graph;
+  for (auto vertex_index : boost::make_iterator_range(boost::vertices(boost_graph))) {
+    const BoostVertex &vertex = boost_graph[vertex_index];
+    graph.add_vertex(vertex.site);
   }
 
-  for (auto e : boost::make_iterator_range(boost::edges(bg))) {
-    const ExtensionData &extension_data = bg[e];
-    const Index s = bg[boost::source(e, bg)].index;
-    const Index t = bg[boost::target(e, bg)].index;
-    g.add_edge(s, t, extension_data);
+  for (const auto &edge_description : boost::make_iterator_range(boost::edges(boost_graph))) {
+    const ExtensionData &extension_data = boost_graph[edge_description];
+    const Index source_vertex_index = boost_graph[boost::source(edge_description, boost_graph)].index;
+    const Index target_vertex_index = boost_graph[boost::target(edge_description, boost_graph)].index;
+    graph.add_edge(source_vertex_index, target_vertex_index, extension_data);
   }
 
-  return g;
+  return graph;
+}
+
+BoostGraph convert_to_boost_graph(const Graph &graph) {
+    BoostGraph boost_graph;
+
+  for (const auto &v : graph.get_vertices()) {
+    boost::add_vertex(BoostVertex{v.index, v.site}, boost_graph);
+  }
+
+  for (const auto &v : graph.get_vertices()) {
+    for (const auto &e : v.out_edges) {
+      boost::add_edge(v.index, e.vertex_index, e.data, boost_graph);
+    }
+  }
+
+  return boost_graph;
+
 }
 
 } // namespace perf_rcsp

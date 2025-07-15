@@ -23,7 +23,9 @@
 #include "rcsp_graph.h"
 
 namespace perf_rcsp {
-Graph convert(const BoostGraph &bg);
+Graph convert_to_graph(const BoostGraph &boost_graph);
+
+BoostGraph convert_to_boost_graph(const Graph &graph);
 
 } // namespace perf_rcsp
 

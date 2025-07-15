@@ -34,6 +34,7 @@ struct ExtensionData {
   int time_change = 0;
   int energy_change = 0;
   int delivery_index = NOT_A_DELIVERY_MARKER;
+  auto operator<=>(const ExtensionData &) const = default;
 };
 
 struct State { // Also known as a "resource container".
