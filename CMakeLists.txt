@@ -51,6 +51,8 @@ add_executable(benchmark
         code/src/benchmark.cpp
         code/src/example_graphs.cpp
         code/src/rcsp_boost_graph.cpp
+        code/src/convert.cpp
+        code/src/rcsp.cpp
 )
 target_link_libraries(benchmark PRIVATE
         spdlog::spdlog

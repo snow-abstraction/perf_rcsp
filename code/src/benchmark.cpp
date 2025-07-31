@@ -13,33 +13,57 @@
 // <https://www.gnu.org/licenses/>.
 //
 
+#include "convert.h"
 #include "example_graphs.h"
 
 #include <benchmark/benchmark.h>
 
 static void BM_BoostRCSP(benchmark::State &state) {
-
-  int seed = 42;
   for (auto _ : state) {
-    const perf_rcsp::State initial_state{};
-    state.PauseTiming();
-    perf_rcsp::SourceTargetBoostGraph s_t_g;
-    perf_rcsp::generate(static_cast<int>(state.range(0)), seed, s_t_g);
-    ++seed;
-    state.ResumeTiming();
-    auto solutions = find_boost_solutions(s_t_g, initial_state);
-    // It is intended that the generated instance should have some solutions.
-    ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
-    // help prevent optimizing away find_solutions.
-    seed += static_cast<int>(solutions.nondominated_end_states.size());
+    // 20 different instance to reduce variance
+    for (int random_seed = 0; random_seed < 20; ++random_seed) {
+      const perf_rcsp::State initial_state{};
+      state.PauseTiming();
+      perf_rcsp::SourceTargetBoostGraph s_t_g;
+      perf_rcsp::generate(static_cast<int>(state.range(0)), random_seed, s_t_g);
+      state.ResumeTiming();
+      auto solutions = find_boost_solutions(s_t_g, initial_state);
+      // It is intended that the generated instance should have some solutions.
+      ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
+    }
   }
 }
 
-static void customer_sites_counts(benchmark::internal::Benchmark *b) {
-  for (int customer_sites_count = 5; customer_sites_count <= 10; ++customer_sites_count) {
+static void BM_RCSP(benchmark::State &state) {
+  for (auto _ : state) {
+    // 20 different instance to reduce variance
+    for (int random_seed = 0; random_seed < 20; ++random_seed) {
+      const perf_rcsp::State initial_state{};
+      state.PauseTiming();
+      perf_rcsp::SourceTargetBoostGraph s_t_g;
+      perf_rcsp::generate(static_cast<int>(state.range(0)), random_seed, s_t_g);
+      auto graph = convert_to_graph(s_t_g.graph);
+      state.ResumeTiming();
+      auto solutions = find_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, initial_state);
+      // It is intended that the generated instance should have some solutions.
+      ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
+    }
+  }
+}
+
+static void customer_sites_counts_4_14(benchmark::internal::Benchmark *b) {
+  for (int customer_sites_count = 4; customer_sites_count <= 14; customer_sites_count += 1) {
     b->Args({customer_sites_count});
   }
 }
 
-BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts);
+static void customer_sites_counts_4_20(benchmark::internal::Benchmark *b) {
+  for (int customer_sites_count = 4; customer_sites_count <= 20; customer_sites_count += 1) {
+    b->Args({customer_sites_count});
+  }
+}
+
+BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts_4_14);
+BENCHMARK(BM_RCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts_4_20);
+
 BENCHMARK_MAIN();
