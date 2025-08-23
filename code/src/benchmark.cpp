@@ -51,8 +51,8 @@ static void BM_RCSP(benchmark::State &state) {
   }
 }
 
-static void customer_sites_counts_4_14(benchmark::internal::Benchmark *b) {
-  for (int customer_sites_count = 4; customer_sites_count <= 14; customer_sites_count += 1) {
+static void customer_sites_counts_4_15(benchmark::internal::Benchmark *b) {
+  for (int customer_sites_count = 4; customer_sites_count <= 15; customer_sites_count += 1) {
     b->Args({customer_sites_count});
   }
 }
@@ -63,7 +63,7 @@ static void customer_sites_counts_4_20(benchmark::internal::Benchmark *b) {
   }
 }
 
-BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts_4_14);
+BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts_4_15);
 BENCHMARK(BM_RCSP)->Unit(benchmark::kMillisecond)->Apply(customer_sites_counts_4_20);
 
 BENCHMARK_MAIN();
