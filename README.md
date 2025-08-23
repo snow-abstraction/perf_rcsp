@@ -27,4 +27,8 @@ See the [LICENSE](./LICENSE) file for details.
    cpupower frequency-set --governor powersave
    cpupower frequency-info -o proc
    ```
-3. Setup jupyter-lab via `pipx inject jupyterlab pandas jupyter-ruff`
+3. Setup jupyter-lab via
+   ```shell
+   pipx install jupyterlab
+   pipx inject jupyterlab pandas jupyter-ruff matplotlib
+   ```
