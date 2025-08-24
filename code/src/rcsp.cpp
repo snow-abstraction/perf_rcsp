@@ -50,25 +50,32 @@ void extend_and_handle_domination(
     if (is_dominate(l.s, new_state)) {
       return;
     }
+    if (is_dominate(new_state, l.s)) {
+      l.dominated = true;
+    }
+
   }
 
   for (auto &l : next_labels) {
     if (is_dominate(l.s, new_state)) {
       return;
     }
-  }
-
-  for (auto &l : next_labels) {
     if (is_dominate(new_state, l.s)) {
       l.dominated = true;
     }
   }
 
-  for (auto &l : curr_labels) {
-    if (is_dominate(new_state, l.s)) {
-      l.dominated = true;
-    }
-  }
+  // for (auto &l : next_labels) {
+  //   if (is_dominate(new_state, l.s)) {
+  //     l.dominated = true;
+  //   }
+  // }
+
+  // for (auto &l : curr_labels) {
+  //   if (is_dominate(new_state, l.s)) {
+  //     l.dominated = true;
+  //   }
+  // }
 
   size_t tree_index = label_tree.size();
   label_tree.emplace_back(old_label.label_tree_index, tree_index, EdgeLocation{node_index, out_edge_index});
