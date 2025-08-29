@@ -1,4 +1,5 @@
 # perf_rcsp
+
 Copyright (C) 2025 Douglas Wayne Potter
 
 This *Performance - Resource Constrained Shortest Path* project explores the performance (latency)
@@ -24,7 +25,6 @@ See the [LICENSE](./LICENSE) file for details.
 
 1. I'll use "route generation" for a simple VRP as my dummy problem for RCSP. Some aspects will be naive because those
    are not the aspects I want to explore in this project.
-
 
 ### Development notes:
 
