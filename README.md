@@ -21,5 +21,16 @@ See the [LICENSE](./LICENSE) file for details.
 ### Development notes:
 
 1. If you add CMake Profile to be built in CLion, you need to go to the vcpkg menu, choose edit and check the added
-   CMake profile in "Add Vcpkg integration to existing CMake profiles". Otherwise, CMake won't find the packages such
-   as `boost-graph`, `gtest`, etc.
+   CMake profile in "Add Vcpkg integration to existing CMake profiles". Otherwise, CMake won't find the packages
+   such as `boost-graph`, `gtest`, etc.
+2. Linux commands for CPU frequency scaling:
+   ```shell
+   cpupower frequency-set --governor performance
+   cpupower frequency-set --governor powersave
+   cpupower frequency-info -o proc
+   ```
+3. Setup jupyter-lab via
+   ```shell
+   pipx install jupyterlab
+   pipx inject jupyterlab pandas jupyter-ruff matplotlib
+   ```
