@@ -55,7 +55,7 @@ visualizes them. The plot below is from that notebook. The ~10x speed-up is impl
    cpupower frequency-set --governor powersave
    cpupower frequency-info -o proc
    ```
-3. Setup jupyter-lab via
+3. Setup jupyter-lab via pipx:
    ```shell
    pipx install jupyterlab
    pipx inject jupyterlab pandas jupyter-ruff matplotlib
