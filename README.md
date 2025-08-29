@@ -11,6 +11,11 @@ implement problem specific performance improvements.
 The implementation tries to avoid some of the indirection and pointer chasing found the boost
 implementation by storing all the labels (and states) in contiguous memory for each node.
 
+I would also like to thank the authors of the boost algorithm for providing a correct reference.
+That I manage to achieve better performance for instances for a RCSP problem my own choosing is no
+surprise. It is almost always easy to achieve better performance given problem and instance specifics and specific
+hardware.
+
 ## This project is licensed under the GNU Affero General Public License v3.0
 
 See the [LICENSE](./LICENSE) file for details.
