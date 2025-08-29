@@ -75,13 +75,15 @@ void extend_and_handle_domination(
   next_labels.emplace_back(new_state, false, tree_index);
 }
 
-Solutions find_solutions(const Graph &g, Index source_index, Index target_index, State initial_state) {
-  // Note: the design tried to avoid pointer chasing when compared with boost::r_c_shortest_paths
-  // but there are cons as well, such as how "early" we discover a state is dominated.
+Solutions find_ping_pong_solutions(const Graph &g, Index source_index, Index target_index, State initial_state) {
+  // Note: the ping-pong design tried to avoid pointer chasing when compared with boost::r_c_shortest_paths
 
   ASSERT_ALWAYS(source_index != target_index);
   const auto &vs = g.get_vertices();
   ASSERT_ALWAYS(vs[target_index].out_edges.empty());
+  // the algorithm ping-pongs i.e. alternates between:
+  // 1. curr as input and next as output
+  // 2. next as input and curr as output
   std::vector<std::vector<Label>> curr(vs.size());
   std::vector<std::vector<Label>> next(vs.size());
   std::vector<LabelHistory> label_tree;
@@ -90,7 +92,7 @@ Solutions find_solutions(const Graph &g, Index source_index, Index target_index,
     vertex_indices.push_back(v.index);
   }
 
-  { // set up label for initial state
+  { // set up label for the initial state
     size_t label_tree_index = 0;
     curr[source_index].emplace_back(initial_state, false, label_tree_index);
     label_tree.push_back(LabelHistory{ROOT_MARKER, label_tree_index, source_index, 0});
@@ -111,7 +113,7 @@ Solutions find_solutions(const Graph &g, Index source_index, Index target_index,
       labels.erase(first, last);
       std::ranges::sort(labels, [](auto lhs, auto rhs) { return lhs.s.time < rhs.s.time; });
     }
-    //
+
     std::ranges::sort(vertex_indices, [&curr](auto lhs_index, auto rhs_index) {
       const auto &lhs = curr[lhs_index];
       const auto &rhs = curr[rhs_index];
@@ -148,8 +150,6 @@ Solutions find_solutions(const Graph &g, Index source_index, Index target_index,
       vertex_labels.clear();
     }
 
-    // TODO: instead of skipping dominated above. We could filter out dominated here, thinking
-    //  of parallelization.
     std::swap(curr, next);
   }
 

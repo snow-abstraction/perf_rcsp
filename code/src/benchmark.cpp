@@ -24,7 +24,7 @@ void static generate(long n_sites, long random_seed, perf_rcsp::SourceTargetBoos
 
 constexpr perf_rcsp::State initial_state{};
 
-static void BM_BoostRCSP(benchmark::State &state) {
+static void boost_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
     perf_rcsp::SourceTargetBoostGraph s_t_g;
@@ -36,14 +36,14 @@ static void BM_BoostRCSP(benchmark::State &state) {
   }
 }
 
-static void BM_RCSP(benchmark::State &state) {
+static void ping_pong_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
     perf_rcsp::SourceTargetBoostGraph s_t_g;
     generate(state.range(1), state.range(0), s_t_g);
     auto graph = convert_to_graph(s_t_g.graph);
     state.ResumeTiming();
-    auto solutions = find_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, initial_state);
+    auto solutions = find_ping_pong_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, initial_state);
     // It is intended that the generated instance should have some solutions.
     ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
   }
@@ -52,7 +52,7 @@ static void BM_RCSP(benchmark::State &state) {
 const auto seeds = benchmark::CreateDenseRange(100, 114, 1);
 const auto site_counts = benchmark::CreateDenseRange(1, 15, 1);
 
-BENCHMARK(BM_BoostRCSP)->Unit(benchmark::kMillisecond)->ArgsProduct({seeds, site_counts});
-BENCHMARK(BM_RCSP)->Unit(benchmark::kMillisecond)->ArgsProduct({seeds, site_counts});
+BENCHMARK(boost_rcsp)->Unit(benchmark::kMillisecond)->ArgsProduct({seeds, site_counts});
+BENCHMARK(ping_pong_rcsp)->Unit(benchmark::kMillisecond)->ArgsProduct({seeds, site_counts});
 
 BENCHMARK_MAIN();
