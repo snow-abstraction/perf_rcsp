@@ -42,3 +42,11 @@ See the [LICENSE](./LICENSE) file for details.
    pipx install jupyterlab
    pipx inject jupyterlab pandas jupyter-ruff matplotlib
    ```
+4. vckpg + cmake:
+   ```shell
+   vcpkg install
+   mkdir release
+   cd release
+   cmake  -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release ..
+   make
+   ```
