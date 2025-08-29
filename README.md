@@ -8,6 +8,9 @@ complex problems of interest to me (and maybe you). I am interested if easy spee
 I am also interested in creating my own simpler implementation (versus boost graph) since then I could
 implement problem specific performance improvements.
 
+The implementation tries to avoid some of the indirection and pointer chasing found the boost
+implementation by storing all the labels (and states) in contiguous memory for each node.
+
 ## This project is licensed under the GNU Affero General Public License v3.0
 
 See the [LICENSE](./LICENSE) file for details.
