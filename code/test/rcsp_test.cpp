@@ -38,7 +38,7 @@ TEST(rcsp, boost_gives_identical_number_of_optimal_states) {
     auto boost_solutions = find_boost_solutions(s_t_g, State{});
 
     auto graph = convert_to_graph(s_t_g.graph);
-    auto solutions = find_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, State{});
+    auto solutions = find_ping_pong_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, State{});
 
     ASSERT_EQ(boost_solutions.nondominated_end_states.size(), solutions.nondominated_end_states.size());
   }

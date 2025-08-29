@@ -33,7 +33,7 @@ struct Solutions {
   std::vector<State> nondominated_end_states;
 };
 
-Solutions find_solutions(const Graph &g, Index source_index, Index target_index, State initial_state);
+Solutions find_ping_pong_solutions(const Graph &g, Index source_index, Index target_index, State initial_state);
 
 } // namespace perf_rcsp
 
