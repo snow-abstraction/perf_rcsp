@@ -50,21 +50,15 @@ void extend_and_handle_domination(
     if (is_dominate(l.s, new_state)) {
       return;
     }
+    if (is_dominate(new_state, l.s)) {
+      l.dominated = true;
+    }
   }
 
   for (auto &l : next_labels) {
     if (is_dominate(l.s, new_state)) {
       return;
     }
-  }
-
-  for (auto &l : next_labels) {
-    if (is_dominate(new_state, l.s)) {
-      l.dominated = true;
-    }
-  }
-
-  for (auto &l : curr_labels) {
     if (is_dominate(new_state, l.s)) {
       l.dominated = true;
     }
