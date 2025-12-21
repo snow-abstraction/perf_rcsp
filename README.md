@@ -44,6 +44,12 @@ the "desktop_Boost" and "desktop_ping_pong" mean lines (note the log y scale).
 2. I want to be clear that this is not how I would choose to solve real-world VRPs. There are many VRP specific methods
    and algorithms related to "Adaptive Large Neighborhood Search", "Branch-Price-and-Cut" and others that are
    better suited. Note that an RCSP algorithm can be used as a sub-algorithm within some algorithms.
+3. After several months of neither working on this or thinking about, I spontaneously realized that my implementation
+   does not check dominance for all states at each node as the Boost implementation does. It only checks some active
+   states (being processed `curr` and to be processed `next`). There was always special processing at the target node
+   which is why the results are correct. However during early December 2025, I experimented with checking the dominance
+   against older states and performance worsened significantly. My basic thinking about this is for some graph
+   structure checking against older state should pay off but for the test graphs states it did not.
 
 ### Development notes:
 
