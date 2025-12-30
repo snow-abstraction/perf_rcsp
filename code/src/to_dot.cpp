@@ -46,7 +46,7 @@ example: {0} 10 42 0)",
     const bool show_travel_edges = std::atoi(argv[3]) != 0;
 
     SourceTargetBoostGraph s_t_g;
-    generate(sites_count, seed, s_t_g);
+    generate_SourceTargetBoostGraph(sites_count, seed, s_t_g);
     output_graph_as_dot(s_t_g.graph, show_travel_edges, std::cout);
   } catch (const std::exception &e) {
     fmt::println("exception occurred: {}", e.what());

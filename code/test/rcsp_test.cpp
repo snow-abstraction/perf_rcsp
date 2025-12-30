@@ -33,7 +33,7 @@ TEST(rcsp, boost_gives_identical_number_of_optimal_states) {
     int seed = 42 + i;
     // small for fast solve times.
     int sites_count = i % 5 + 1;
-    generate(sites_count, seed, source_target_boost_graph);
+    generate_SourceTargetBoostGraph(sites_count, seed, source_target_boost_graph);
 
     auto boost_solutions = find_boost_solutions(source_target_boost_graph, State{});
 

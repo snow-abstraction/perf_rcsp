@@ -19,7 +19,7 @@
 #include <benchmark/benchmark.h>
 
 void static generate(long n_sites, long random_seed, perf_rcsp::SourceTargetBoostGraph &s_t_g) {
-  perf_rcsp::generate(static_cast<int>(n_sites), static_cast<int>(random_seed), s_t_g);
+  perf_rcsp::generate_SourceTargetBoostGraph(static_cast<int>(n_sites), static_cast<int>(random_seed), s_t_g);
 }
 
 constexpr perf_rcsp::State initial_state{};
