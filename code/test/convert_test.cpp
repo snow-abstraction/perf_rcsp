@@ -76,13 +76,15 @@ bool equal_boost_graphs(const BoostGraph &lhs, const BoostGraph &rhs) {
 
 TEST(convert, convert_and_convert_back_gives_equal_boost_graph) {
   for (int i = 1; i < 100; i++) {
-    SourceTargetBoostGraph s_t_g;
+    SourceTargetBoostGraph source_target_boost_graph;
     int seed = 42 + i;
     // always at least one site but not more deliveries than the model supports.
     int sites_count = i % (N_DELIVERIES - 1) + 1;
-    generate(sites_count, seed, s_t_g);
-    auto graph = convert_to_graph(s_t_g.graph);
-    auto converted_back = convert_to_boost_graph(graph);
-    ASSERT_TRUE(equal_boost_graphs(s_t_g.graph, converted_back));
+    generate(sites_count, seed, source_target_boost_graph);
+    auto source_target_graph = convert_to_graph(source_target_boost_graph);
+    auto converted_back = convert_to_source_target_boost_graph(source_target_graph);
+    ASSERT_TRUE(source_target_boost_graph.source_vertex == converted_back.source_vertex);
+    ASSERT_TRUE(source_target_boost_graph.target_vertex == converted_back.target_vertex);
+    ASSERT_TRUE(equal_boost_graphs(source_target_boost_graph.graph, converted_back.graph));
   }
 }

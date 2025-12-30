@@ -21,6 +21,8 @@
 #include <boost/range/iterator_range.hpp>
 
 namespace perf_rcsp {
+
+namespace {
 Graph convert_to_graph(const BoostGraph &boost_graph) {
   Graph graph;
   for (auto vertex_index : boost::make_iterator_range(boost::vertices(boost_graph))) {
@@ -52,6 +54,15 @@ BoostGraph convert_to_boost_graph(const Graph &graph) {
   }
 
   return boost_graph;
+}
+} // namespace
+
+SourceTargetGraph convert_to_graph(const SourceTargetBoostGraph &boost_graph) {
+  return {boost_graph.source_vertex, boost_graph.target_vertex, convert_to_graph(boost_graph.graph)};
+}
+
+SourceTargetBoostGraph convert_to_source_target_boost_graph(const SourceTargetGraph &graph) {
+  return {graph.source_vertex, graph.target_vertex, convert_to_boost_graph(graph.graph)};
 }
 
 } // namespace perf_rcsp

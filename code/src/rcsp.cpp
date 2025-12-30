@@ -69,9 +69,12 @@ void extend_and_handle_domination(
   next_labels.emplace_back(new_state, false, tree_index);
 }
 
-Solutions find_ping_pong_solutions(const Graph &g, Index source_index, Index target_index, State initial_state) {
+Solutions find_ping_pong_solutions(const SourceTargetGraph &source_target_graph, State initial_state) {
   // Note: the ping-pong design tried to avoid pointer chasing when compared with boost::r_c_shortest_paths
 
+  const Graph &g = source_target_graph.graph;
+  Index source_index = source_target_graph.source_vertex;
+  Index target_index = source_target_graph.target_vertex;
   ASSERT_ALWAYS(source_index != target_index);
   const auto &vs = g.get_vertices();
   ASSERT_ALWAYS(vs[target_index].out_edges.empty());
