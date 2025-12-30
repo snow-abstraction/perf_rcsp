@@ -27,10 +27,10 @@ constexpr perf_rcsp::State initial_state{};
 static void boost_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
-    perf_rcsp::SourceTargetBoostGraph s_t_g;
-    generate(state.range(1), state.range(0), s_t_g);
+    perf_rcsp::SourceTargetBoostGraph source_target_boost_graph;
+    generate(state.range(1), state.range(0), source_target_boost_graph);
     state.ResumeTiming();
-    auto solutions = find_boost_solutions(s_t_g, initial_state);
+    auto solutions = find_boost_solutions(source_target_boost_graph, initial_state);
     // It is intended that the generated instance should have some solutions.
     ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
   }
@@ -39,11 +39,11 @@ static void boost_rcsp(benchmark::State &state) {
 static void ping_pong_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
-    perf_rcsp::SourceTargetBoostGraph s_t_g;
-    generate(state.range(1), state.range(0), s_t_g);
-    auto graph = convert_to_graph(s_t_g.graph);
+    perf_rcsp::SourceTargetBoostGraph source_target_boost_graph;
+    generate(state.range(1), state.range(0), source_target_boost_graph);
+    auto source_target_graph = convert_to_graph(source_target_boost_graph);
     state.ResumeTiming();
-    auto solutions = find_ping_pong_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, initial_state);
+    auto solutions = find_ping_pong_solutions(source_target_graph, initial_state);
     // It is intended that the generated instance should have some solutions.
     ASSERT_ALWAYS(!solutions.nondominated_end_states.empty());
   }

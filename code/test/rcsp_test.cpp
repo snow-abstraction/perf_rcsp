@@ -29,16 +29,16 @@ namespace views = std::views;
 
 TEST(rcsp, boost_gives_identical_number_of_optimal_states) {
   for (int i = 1; i < 100; i++) {
-    SourceTargetBoostGraph s_t_g;
+    SourceTargetBoostGraph source_target_boost_graph;
     int seed = 42 + i;
     // small for fast solve times.
     int sites_count = i % 5 + 1;
-    generate(sites_count, seed, s_t_g);
+    generate(sites_count, seed, source_target_boost_graph);
 
-    auto boost_solutions = find_boost_solutions(s_t_g, State{});
+    auto boost_solutions = find_boost_solutions(source_target_boost_graph, State{});
 
-    auto graph = convert_to_graph(s_t_g.graph);
-    auto solutions = find_ping_pong_solutions(graph, s_t_g.source_vertex, s_t_g.target_vertex, State{});
+    auto source_target_graph = convert_to_graph(source_target_boost_graph);
+    auto solutions = find_ping_pong_solutions(source_target_graph, State{});
 
     ASSERT_EQ(boost_solutions.nondominated_end_states.size(), solutions.nondominated_end_states.size());
   }

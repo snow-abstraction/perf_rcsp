@@ -70,6 +70,12 @@ public:
   [[nodiscard]] const std::vector<Vertex> &get_vertices() const { return vertices; }
 };
 
+struct SourceTargetGraph {
+  Index source_vertex = -1;
+  Index target_vertex = -1;
+  Graph graph;
+};
+
 constexpr size_t ROOT_MARKER = 0;
 struct LabelHistory {
   size_t parent_label_tree_index = ROOT_MARKER;
