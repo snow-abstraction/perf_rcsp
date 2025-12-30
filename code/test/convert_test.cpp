@@ -26,6 +26,7 @@
 using namespace perf_rcsp;
 namespace views = std::views;
 
+// TODO: remove when removing generate_SourceTargetBoostGraph
 // Note: boost graph does not define the equality operator and some
 // answers only get mixed up with the concept of graph isomorphism. Here
 // we just want simple equality.
@@ -74,17 +75,47 @@ bool equal_boost_graphs(const BoostGraph &lhs, const BoostGraph &rhs) {
   return true;
 }
 
-TEST(convert, convert_and_convert_back_gives_equal_boost_graph) {
+// TODO: remove when removing generate_SourceTargetBoostGraph
+TEST(convert, convert_and_convert_back_gives_equal_source_target_boost_graph) {
   for (int i = 1; i < 100; i++) {
     SourceTargetBoostGraph source_target_boost_graph;
     int seed = 42 + i;
     // always at least one site but not more deliveries than the model supports.
     int sites_count = i % (N_DELIVERIES - 1) + 1;
-    generate(sites_count, seed, source_target_boost_graph);
+    generate_SourceTargetBoostGraph(sites_count, seed, source_target_boost_graph);
     auto source_target_graph = convert_to_graph(source_target_boost_graph);
     auto converted_back = convert_to_source_target_boost_graph(source_target_graph);
     ASSERT_TRUE(source_target_boost_graph.source_vertex == converted_back.source_vertex);
     ASSERT_TRUE(source_target_boost_graph.target_vertex == converted_back.target_vertex);
     ASSERT_TRUE(equal_boost_graphs(source_target_boost_graph.graph, converted_back.graph));
+  }
+}
+
+TEST(convert, convert_and_convert_back_gives_equal_source_target_graph) {
+  for (int i = 1; i < 100; i++) {
+    int seed = 42 + i;
+    // always at least one site but not more deliveries than the model supports.
+    int sites_count = i % (N_DELIVERIES - 1) + 1;
+    auto source_target_graph = generate(sites_count, seed);
+    auto source_target_boost_graph = convert_to_source_target_boost_graph(source_target_graph);
+    auto converted_back = convert_to_graph(source_target_boost_graph);
+    ASSERT_EQ(source_target_graph, converted_back);
+  }
+}
+
+// TODO: remove when removing generate_SourceTargetBoostGraph
+TEST(example_graphs, equal_graphs_with_both_ways_of_generating) {
+  for (int i = 1; i < 100; i++) {
+    int seed = 42 + i;
+    // always at least one site but not more deliveries than the model supports.
+    int sites_count = i % (N_DELIVERIES - 1) + 1;
+
+    SourceTargetBoostGraph source_target_boost_graph;
+    generate_SourceTargetBoostGraph(sites_count, seed, source_target_boost_graph);
+    auto source_target_graph_from_boost = convert_to_graph(source_target_boost_graph);
+
+    auto source_target_graph = generate(sites_count, seed);
+
+    ASSERT_EQ(source_target_graph_from_boost, source_target_graph);
   }
 }

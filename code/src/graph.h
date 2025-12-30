@@ -21,22 +21,26 @@
 
 #include "vrp_model.h"
 
+#include <compare>
 #include <vector>
 
 namespace perf_rcsp {
 
 struct TargetEdge {
+  auto operator<=>(const TargetEdge &) const = default;
   Index vertex_index = {};
   ExtensionData data = {};
 };
 
 struct Vertex {
+  auto operator<=>(const Vertex &) const = default;
   Index index = -1;
   Site site = {-1, -1};
   std::vector<TargetEdge> out_edges;
 };
 
 struct EdgeLocation {
+  auto operator<=>(const EdgeLocation &) const = default;
   Index source_vertex_index = 0;
   Index out_edge_index = 0;
 };
@@ -46,6 +50,8 @@ class Graph {
   std::vector<EdgeLocation> edges = {};
 
 public:
+  auto operator<=>(const Graph &) const = default;
+
   Index add_vertex(const Site &site) {
     Index index = vertices.size();
     vertices.emplace_back(index, site, std::vector<TargetEdge>());
@@ -68,9 +74,12 @@ public:
   }
 
   [[nodiscard]] const std::vector<Vertex> &get_vertices() const { return vertices; }
+
+  [[nodiscard]] const std::vector<EdgeLocation> &get_edge_locations() const { return edges; }
 };
 
 struct SourceTargetGraph {
+  auto operator<=>(const SourceTargetGraph &) const = default;
   Index source_vertex = -1;
   Index target_vertex = -1;
   Graph graph;

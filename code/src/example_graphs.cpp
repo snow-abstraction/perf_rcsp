@@ -77,7 +77,7 @@ bool add_site_to_site_travel_edges(
   return false;
 }
 
-void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t_graph) {
+void generate_SourceTargetBoostGraph(const int sites_count, const int seed, SourceTargetBoostGraph &s_t_graph) {
   ASSERT_ALWAYS(1 <= sites_count);
   s_t_graph.source_vertex = 0;
   s_t_graph.target_vertex = sites_count;
@@ -121,6 +121,94 @@ void generate(const int sites_count, const int seed, SourceTargetBoostGraph &s_t
   boost::add_edge(
     0, sites_count, ExtensionData(extension_index++, 0, latest_time, 0, 0, 0, NOT_A_DELIVERY_MARKER), graph
   );
+}
+
+bool add_site_to_site_travel_edges(
+  const std::vector<Site> &sites,
+  const int latest_time,
+  Index &extension_index,
+  Graph &graph
+) {
+  auto enumerated_sites = views::enumerate(sites);
+  for (auto [from_vertex_index, from_site] : enumerated_sites) {
+    for (auto [to_vertex_index, to_site] : enumerated_sites) {
+      if (from_vertex_index == to_vertex_index) {
+        continue;
+      }
+      float x_diff = (from_site.x - to_site.x);
+      float y_diff = (from_site.y - to_site.y);
+      float distance = std::sqrt(10 * (x_diff * x_diff + y_diff * y_diff));
+      ASSERT_ALWAYS(0 < distance);
+      graph.add_edge(
+        from_vertex_index, to_vertex_index,
+        ExtensionData(extension_index++, 0, latest_time, 2 * distance, distance, -distance, NOT_A_DELIVERY_MARKER)
+      );
+    }
+  }
+  return false;
+}
+
+SourceTargetGraph generate(int sites_count, int seed) {
+  ASSERT_ALWAYS(1 <= sites_count);
+  SourceTargetGraph stg;
+
+  stg.source_vertex = 0;
+  stg.target_vertex = sites_count;
+
+  std::mt19937 gen(seed);
+  const std::vector<Site> sites = create_sites(sites_count, gen);
+
+  // add one vertex for each site
+  for (auto [index, site] : views::enumerate(sites)) {
+    Index assigned_index = stg.graph.add_vertex(site);
+    ASSERT_ALWAYS(index == assigned_index);
+  }
+
+  // add one extra vertex to be used as the target vertex and offset position for visualization
+  stg.graph.add_vertex({sites[0].x + 0.5f, sites[0].y + 0.5f});
+
+  const int latest_time = 100;
+  Index extension_index = 0; // also the edge index
+  // always add charger/fueling edge at index 0
+  stg.graph.add_edge(0, 0, ExtensionData(extension_index++, 0, latest_time, 3, 2, 4, NOT_A_DELIVERY_MARKER));
+
+  // add more chargers/fueling edges randomly
+  std::uniform_real_distribution<> charger_distribution(0, 1);
+  for (Index i = 1; i < sites_count; ++i) {
+    if (charger_distribution(gen) < 0.15) {
+      // add charger/fueling at index
+      stg.graph.add_edge(i, i, ExtensionData{extension_index++, 0, latest_time, 3, 2, 4, NOT_A_DELIVERY_MARKER});
+    }
+  }
+
+  // add delivery edges
+  for (Index i = 1; i < sites_count; ++i) {
+    ASSERT_ALWAYS(i < N_DELIVERIES);
+    stg.graph.add_edge(i, i, ExtensionData(extension_index++, 0, latest_time, 0, 0, 0, static_cast<int>(i)));
+  }
+
+  add_site_to_site_travel_edges(sites, latest_time, extension_index, stg.graph);
+
+  // add a structural edge from source (index = 0) to target (index = sites_count)
+  stg.graph.add_edge(0, sites_count, ExtensionData(extension_index++, 0, latest_time, 0, 0, 0, NOT_A_DELIVERY_MARKER));
+
+  { // hack to make edges sorted nicely for converting to and from SourceTargetBoostGraph and getting an equal Graph
+    Graph temp_graph;
+    for (const auto &v : stg.graph.get_vertices()) {
+      temp_graph.add_vertex(v.site);
+    }
+
+    auto els = stg.graph.get_edge_locations();
+    std::ranges::sort(els);
+    for (const auto &el : els) {
+      const TargetEdge &target_edge = stg.graph.get_vertices()[el.source_vertex_index].out_edges[el.out_edge_index];
+      temp_graph.add_edge(el.source_vertex_index, target_edge.vertex_index, target_edge.data);
+    }
+
+    stg.graph = temp_graph;
+  }
+
+  return stg;
 }
 
 } // namespace perf_rcsp

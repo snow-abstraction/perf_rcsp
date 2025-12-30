@@ -47,10 +47,11 @@ BoostGraph convert_to_boost_graph(const Graph &graph) {
     boost::add_vertex(BoostVertex{v.index, v.site}, boost_graph);
   }
 
-  for (const auto &v : graph.get_vertices()) {
-    for (const auto &e : v.out_edges) {
-      boost::add_edge(v.index, e.vertex_index, e.data, boost_graph);
-    }
+  // Add edges in order of edge locations to make converting to and from BoostGraph result in an equal
+  // Graph. This works now but depends on boost graph internals.
+  for (const auto &el : graph.get_edge_locations()) {
+    const TargetEdge &target_edge = graph.get_vertices()[el.source_vertex_index].out_edges[el.out_edge_index];
+    boost::add_edge(el.source_vertex_index, target_edge.vertex_index, target_edge.data, boost_graph);
   }
 
   return boost_graph;

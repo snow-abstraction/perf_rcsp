@@ -19,6 +19,7 @@
 #ifndef EXAMPLE_GRAPHS_H
 #define EXAMPLE_GRAPHS_H
 
+#include "graph.h"
 #include "rcsp_boost_graph.h"
 
 namespace perf_rcsp {
@@ -28,7 +29,9 @@ namespace perf_rcsp {
 //
 // Note: use a reference instead of returning a SourceTargetBoostGraph, since
 // it is unclear if copying or moving boost::graph works correctly.
-void generate(int sites_count, int seed, SourceTargetBoostGraph &s_t_graph);
+void generate_SourceTargetBoostGraph(int sites_count, int seed, SourceTargetBoostGraph &s_t_graph);
+
+SourceTargetGraph generate(int sites_count, int seed);
 
 } // namespace perf_rcsp
 
