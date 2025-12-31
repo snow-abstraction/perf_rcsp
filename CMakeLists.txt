@@ -41,6 +41,7 @@ add_executable(to_dot
         code/src/to_dot.cpp
         code/src/example_graphs.cpp
         code/src/rcsp_boost_graph.cpp
+        code/src/convert.cpp
 )
 target_link_libraries(to_dot PRIVATE
         spdlog::spdlog

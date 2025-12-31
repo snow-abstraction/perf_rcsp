@@ -20,16 +20,8 @@
 #define EXAMPLE_GRAPHS_H
 
 #include "graph.h"
-#include "rcsp_boost_graph.h"
 
 namespace perf_rcsp {
-
-// The function generate generates random SourceTargetBoostGraph
-// to run a RCSP algorithm on.
-//
-// Note: use a reference instead of returning a SourceTargetBoostGraph, since
-// it is unclear if copying or moving boost::graph works correctly.
-void generate_SourceTargetBoostGraph(int sites_count, int seed, SourceTargetBoostGraph &s_t_graph);
 
 SourceTargetGraph generate(int sites_count, int seed);
 
