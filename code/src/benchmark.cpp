@@ -18,8 +18,8 @@
 
 #include <benchmark/benchmark.h>
 
-void static generate(long n_sites, long random_seed, perf_rcsp::SourceTargetBoostGraph &s_t_g) {
-  perf_rcsp::generate_SourceTargetBoostGraph(static_cast<int>(n_sites), static_cast<int>(random_seed), s_t_g);
+static perf_rcsp::SourceTargetGraph generate_from_state_params(long n_sites, long random_seed) {
+  return perf_rcsp::generate(static_cast<int>(n_sites), static_cast<int>(random_seed));
 }
 
 constexpr perf_rcsp::State initial_state{};
@@ -27,8 +27,8 @@ constexpr perf_rcsp::State initial_state{};
 static void boost_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
-    perf_rcsp::SourceTargetBoostGraph source_target_boost_graph;
-    generate(state.range(1), state.range(0), source_target_boost_graph);
+    auto source_target_graph = generate_from_state_params(state.range(1), state.range(0));
+    auto source_target_boost_graph = convert_to_source_target_boost_graph(source_target_graph);
     state.ResumeTiming();
     auto solutions = find_boost_solutions(source_target_boost_graph, initial_state);
     // It is intended that the generated instance should have some solutions.
@@ -39,9 +39,7 @@ static void boost_rcsp(benchmark::State &state) {
 static void ping_pong_rcsp(benchmark::State &state) {
   for (auto _ : state) {
     state.PauseTiming();
-    perf_rcsp::SourceTargetBoostGraph source_target_boost_graph;
-    generate(state.range(1), state.range(0), source_target_boost_graph);
-    auto source_target_graph = convert_to_graph(source_target_boost_graph);
+    auto source_target_graph = generate_from_state_params(state.range(1), state.range(0));
     state.ResumeTiming();
     auto solutions = find_ping_pong_solutions(source_target_graph, initial_state);
     // It is intended that the generated instance should have some solutions.

@@ -26,71 +26,6 @@
 using namespace perf_rcsp;
 namespace views = std::views;
 
-// TODO: remove when removing generate_SourceTargetBoostGraph
-// Note: boost graph does not define the equality operator and some
-// answers only get mixed up with the concept of graph isomorphism. Here
-// we just want simple equality.
-bool equal_boost_graphs(const BoostGraph &lhs, const BoostGraph &rhs) {
-  if (boost::num_edges(lhs) != boost::num_edges(rhs)) {
-    return false;
-  }
-
-  if (boost::num_vertices(lhs) != boost::num_vertices(rhs)) {
-    return false;
-  }
-  // check vertices
-  for (auto [lhs_index, rhs_index] :
-       views::zip(boost::make_iterator_range(boost::vertices(lhs)), boost::make_iterator_range(boost::vertices(rhs)))) {
-    if (lhs_index != rhs_index) {
-      return false;
-    }
-    const BoostVertex &lhs_vertex = lhs[lhs_index];
-    const BoostVertex &rhs_vertex = rhs[rhs_index];
-    if (lhs_vertex != rhs_vertex) {
-      return false;
-    }
-  }
-  // check edges
-  for (auto [lhs_description, rhs_description] :
-       views::zip(boost::make_iterator_range(boost::edges(lhs)), boost::make_iterator_range(boost::edges(rhs)))) {
-    const Index lhs_source_vertex_index = lhs[boost::source(lhs_description, lhs)].index;
-    const Index rhs_source_vertex_index = rhs[boost::source(rhs_description, rhs)].index;
-    if (lhs_source_vertex_index != rhs_source_vertex_index) {
-      return false;
-    }
-
-    const Index lhs_target_vertex_index = lhs[boost::target(lhs_description, lhs)].index;
-    const Index rhs_target_vertex_index = rhs[boost::target(rhs_description, rhs)].index;
-    if (lhs_target_vertex_index != rhs_target_vertex_index) {
-      return false;
-    }
-
-    const ExtensionData &lhs_extension_data = lhs[lhs_description];
-    const ExtensionData &rhs_extension_data = rhs[rhs_description];
-    if (lhs_extension_data != rhs_extension_data) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-// TODO: remove when removing generate_SourceTargetBoostGraph
-TEST(convert, convert_and_convert_back_gives_equal_source_target_boost_graph) {
-  for (int i = 1; i < 100; i++) {
-    SourceTargetBoostGraph source_target_boost_graph;
-    int seed = 42 + i;
-    // always at least one site but not more deliveries than the model supports.
-    int sites_count = i % (N_DELIVERIES - 1) + 1;
-    generate_SourceTargetBoostGraph(sites_count, seed, source_target_boost_graph);
-    auto source_target_graph = convert_to_graph(source_target_boost_graph);
-    auto converted_back = convert_to_source_target_boost_graph(source_target_graph);
-    ASSERT_TRUE(source_target_boost_graph.source_vertex == converted_back.source_vertex);
-    ASSERT_TRUE(source_target_boost_graph.target_vertex == converted_back.target_vertex);
-    ASSERT_TRUE(equal_boost_graphs(source_target_boost_graph.graph, converted_back.graph));
-  }
-}
-
 TEST(convert, convert_and_convert_back_gives_equal_source_target_graph) {
   for (int i = 1; i < 100; i++) {
     int seed = 42 + i;
@@ -100,22 +35,5 @@ TEST(convert, convert_and_convert_back_gives_equal_source_target_graph) {
     auto source_target_boost_graph = convert_to_source_target_boost_graph(source_target_graph);
     auto converted_back = convert_to_graph(source_target_boost_graph);
     ASSERT_EQ(source_target_graph, converted_back);
-  }
-}
-
-// TODO: remove when removing generate_SourceTargetBoostGraph
-TEST(example_graphs, equal_graphs_with_both_ways_of_generating) {
-  for (int i = 1; i < 100; i++) {
-    int seed = 42 + i;
-    // always at least one site but not more deliveries than the model supports.
-    int sites_count = i % (N_DELIVERIES - 1) + 1;
-
-    SourceTargetBoostGraph source_target_boost_graph;
-    generate_SourceTargetBoostGraph(sites_count, seed, source_target_boost_graph);
-    auto source_target_graph_from_boost = convert_to_graph(source_target_boost_graph);
-
-    auto source_target_graph = generate(sites_count, seed);
-
-    ASSERT_EQ(source_target_graph_from_boost, source_target_graph);
   }
 }

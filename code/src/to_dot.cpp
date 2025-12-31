@@ -13,6 +13,7 @@
 // <https://www.gnu.org/licenses/>.
 //
 
+#include "convert.h"
 #include "example_graphs.h"
 #include "rcsp_boost_graph.h"
 
@@ -46,8 +47,10 @@ example: {0} 10 42 0)",
     const bool show_travel_edges = std::atoi(argv[3]) != 0;
 
     SourceTargetBoostGraph s_t_g;
-    generate_SourceTargetBoostGraph(sites_count, seed, s_t_g);
-    output_graph_as_dot(s_t_g.graph, show_travel_edges, std::cout);
+
+    auto source_target_graph = generate(sites_count, seed);
+    auto source_target_boost_graph = convert_to_source_target_boost_graph(source_target_graph);
+    output_graph_as_dot(source_target_boost_graph.graph, show_travel_edges, std::cout);
   } catch (const std::exception &e) {
     fmt::println("exception occurred: {}", e.what());
     return 1;
