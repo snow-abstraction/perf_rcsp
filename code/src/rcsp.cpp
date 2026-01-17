@@ -50,6 +50,10 @@ void extend_and_handle_domination(
     if (is_dominate(l.s, new_state)) {
       return;
     }
+    // If l has already been extended (i.e. l is before (has been processed before) old_label), it is strange to
+    // check if it is dominated. This is not inncorrect w.r.t. to finding set of nondominated paths but it is
+    // unnecessary. It might would be clearer to only
+    // do this for labels after old_label. I assume that since new_state and l.s are in cache it is cheap as-is.
     if (is_dominate(new_state, l.s)) {
       l.dominated = true;
     }
